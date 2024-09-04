@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
 using BepInEx;
@@ -179,8 +180,6 @@ namespace GriffinRagsUnNerfPersonal
 
         public static void ScarsUnNerf()
         {
-            //IL_002b: Unknown result type (might be due to invalid IL or missing references)
-            //IL_0031: Expected O, but got Unknown
             IDetour val = (IDetour)new Hook((MethodBase)typeof(ScarsSE_SO).GetMethod(nameof(ScarsSE_SO.OnEventCall_01), (BindingFlags)(-1)), typeof(MyHome).GetMethod("OnScarsTriggered", (BindingFlags)(-1)));
             Debug.Log("Scars un-nerfed");
         }
@@ -210,37 +209,37 @@ namespace GriffinRagsUnNerfPersonal
             raritySO2.canBeRerolled = true;
             LoadedAssetsHandler.GetEnemy("GigglingMinister_EN").abilities = new EnemyAbilityInfo[4]
             {
-            new EnemyAbilityInfo
-            {
-                ability = LoadedAssetsHandler.GetEnemyAbility("MarrowToucher_A"),
-                rarity = raritySO
-            },
-            new EnemyAbilityInfo
-            {
-                ability = LoadedAssetsHandler.GetEnemyAbility("WretchedThief_A"),
-                rarity = raritySO
-            },
-            new EnemyAbilityInfo
-            {
-                ability = LoadedAssetsHandler.GetEnemyAbility("MindGames_A"),
-                rarity = raritySO
-            },
-            new EnemyAbilityInfo
-            {
-                ability = LoadedAssetsHandler.GetEnemyAbility("PlayThing_A"),
-                rarity = raritySO2
-            }
-            };
+                new EnemyAbilityInfo
+                {
+                    ability = LoadedAssetsHandler.GetEnemyAbility("MarrowToucher_A"),
+                    rarity = raritySO
+                },
+                new EnemyAbilityInfo
+                {
+                    ability = LoadedAssetsHandler.GetEnemyAbility("WretchedThief_A"),
+                    rarity = raritySO
+                },
+                new EnemyAbilityInfo
+                {
+                    ability = LoadedAssetsHandler.GetEnemyAbility("MindGames_A"),
+                    rarity = raritySO
+                },
+                new EnemyAbilityInfo
+                {
+                    ability = LoadedAssetsHandler.GetEnemyAbility("PlayThing_A"),
+                    rarity = raritySO2
+                }
+            }.ToList();
             Debug.Log("Trauma Bond removed");
         }
 
         public static void Arnold()
         {
             LoadedAssetsHandler.GetCharacter("Arnold_CH").passiveAbilities[0]._triggerOn = new TriggerCalls[1] { TriggerCalls.OnDirectDamaged };
-            if (LocUtils.LocDB._passivesData.ContainsKey(LoadedAssetsHandler.GetCharacter("Arnold_CH").passiveAbilities[0].name))
+            if (LocUtils.GameLoc._passivesData.ContainsKey(LoadedAssetsHandler.GetCharacter("Arnold_CH").passiveAbilities[0].name))
             {
                 StringTrioData value = new StringTrioData("Panic Attack", "If Arnold receives direct damage, he will lose all gained damage and healing bonuses.", "If Arnold receives direct damage, he will lose all gained damage and healing bonuses.");
-                LocUtils.LocDB._passivesData[LoadedAssetsHandler.GetCharacter("Arnold_CH").passiveAbilities[0].name] = value;
+                LocUtils.GameLoc._passivesData[LoadedAssetsHandler.GetCharacter("Arnold_CH").passiveAbilities[0].name] = value;
             }
             LoadedAssetsHandler.GetCharacter("Arnold_CH").passiveAbilities[0]._characterDescription = "If Arnold receives direct damage, he will lose all gained damage and healing bonuses.";
             LoadedAssetsHandler.GetCharacter("Arnold_CH").passiveAbilities[0]._enemyDescription = "If Arnold receives direct damage, he will lose all gained damage and healing bonuses.";
@@ -249,12 +248,8 @@ namespace GriffinRagsUnNerfPersonal
 
         public static void NoScatter()
         {
-            //IL_006c: Unknown result type (might be due to invalid IL or missing references)
-            //IL_006f: Unknown result type (might be due to invalid IL or missing references)
-            //IL_0073: Invalid comparison between Unknown and I4
-            //IL_0080: Unknown result type (might be due to invalid IL or missing references)
-            EnemyAbilityInfo[] abilities = LoadedAssetsHandler.GetEnemy("SkinningHomunculus_EN").abilities;
-            for (int i = 0; i < abilities.Length; i++)
+            List<EnemyAbilityInfo> abilities = LoadedAssetsHandler.GetEnemy("SkinningHomunculus_EN").abilities;
+            for (int i = 0; i < abilities.Count; i++)
             {
                 EnemyAbilityInfo enemyAbilityInfo = abilities[i];
                 enemyAbilityInfo.ability.effects[1].effect = ScriptableObject.CreateInstance<ExitValueSetterEffect>();
@@ -270,11 +265,11 @@ namespace GriffinRagsUnNerfPersonal
                 enemyAbilityInfo.ability.intents[enemyAbilityInfo.ability.intents.Count - 1].intents = list.ToArray();
             }
             LoadedAssetsHandler.GetEnemyAbility("FlayTheFlesh_A")._description = "Deals a Painful amount of damage to All party members and enemies to the Right of this enemy as well as this enemy. Moves this enemy to the Left. All damage to enemies is indirect.";
-            LocUtils.LocDB._characterAbilityData[LoadedAssetsHandler.GetEnemyAbility("FlayTheFlesh_A").name] = new StringPairData("Flay the Flesh", "Deals a Painful amount of damage to All party members and enemies to the Right of this enemy as well as this enemy. Moves this enemy to the Left. All damage to enemies is indirect.");
+            LocUtils.GameLoc._characterAbilityData[LoadedAssetsHandler.GetEnemyAbility("FlayTheFlesh_A").name] = new StringPairData("Flay the Flesh", "Deals a Painful amount of damage to All party members and enemies to the Right of this enemy as well as this enemy. Moves this enemy to the Left. All damage to enemies is indirect.");
             LoadedAssetsHandler.GetEnemyAbility("FlayTheSkin_A")._description = "Deals a Painful amount of damage to All party members and enemies to the Left of this enemy as well as this enemy. Moves this enemy to the Right. All damage to enemies is indirect.";
-            LocUtils.LocDB._characterAbilityData[LoadedAssetsHandler.GetEnemyAbility("FlayTheSkin_A").name] = new StringPairData("Flay the Skin", "Deals a Painful amount of damage to All party members and enemies to the Left of this enemy as well as this enemy. Moves this enemy to the Right. All damage to enemies is indirect.");
+            LocUtils.GameLoc._characterAbilityData[LoadedAssetsHandler.GetEnemyAbility("FlayTheSkin_A").name] = new StringPairData("Flay the Skin", "Deals a Painful amount of damage to All party members and enemies to the Left of this enemy as well as this enemy. Moves this enemy to the Right. All damage to enemies is indirect.");
             LoadedAssetsHandler.GetEnemyAbility("Domination_A")._description = "Deals a Mortal amount of damage to the Opposing party member and a Lethal amount of damage to this enemy. Damage dealt to self is indirect.";
-            LocUtils.LocDB._characterAbilityData[LoadedAssetsHandler.GetEnemyAbility("Domination_A").name] = new StringPairData("Domination", "Deals a Mortal amount of damage to the Opposing party member and a Lethal amount of damage to this enemy. Damage dealt to self is indirect.");
+            LocUtils.GameLoc._characterAbilityData[LoadedAssetsHandler.GetEnemyAbility("Domination_A").name] = new StringPairData("Domination", "Deals a Mortal amount of damage to the Opposing party member and a Lethal amount of damage to this enemy. Damage dealt to self is indirect.");
             Debug.Log("Scattering Homunculi removed");
         }
 
